@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hoperun.dao.SubjectItemMapper">
+  <resultMap id="BaseResultMap" type="com.hoperun.entity.SubjectItem">
+    <id column="ID" jdbcType="INTEGER" property="id" />
+    <result column="COL_SUBJECT_ID" jdbcType="INTEGER" property="subjectId" />
+    <result column="COL_OPTION_CONTENT" jdbcType="VARCHAR" property="optionContent" />
+    <result column="COL_OPTION_ORDER" jdbcType="INTEGER" property="optionOrder" />
+  </resultMap>
+  <sql id="Base_umn_List">
+    ID, COL_SUBJECT_ID, COL_OPTION_CONTENT, COL_OPTION_ORDER
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_umn_List" />
+    from TB_SUBJECT_ITEM
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectBySubjectId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_umn_List" />
+    from TB_SUBJECT_ITEM
+    where COL_SUBJECT_ID = #{subjectId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from TB_SUBJECT_ITEM
+    where ID = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.hoperun.entity.SubjectItem">
+    insert into TB_SUBJECT_ITEM ( COL_SUBJECT_ID, COL_OPTION_CONTENT, 
+      COL_OPTION_ORDER)
+    values ( #{subjectId,jdbcType=INTEGER}, #{optionContent,jdbcType=VARCHAR}, 
+      #{optionOrder,jdbcType=INTEGER})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.hoperun.entity.SubjectItem">
+    update TB_SUBJECT_ITEM
+    set COL_SUBJECT_ID = #{subjectId,jdbcType=INTEGER},
+      COL_OPTION_CONTENT = #{optionContent,jdbcType=VARCHAR},
+      COL_OPTION_ORDER = #{optionOrder,jdbcType=INTEGER}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  
+</mapper>

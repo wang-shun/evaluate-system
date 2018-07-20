@@ -1,0 +1,5 @@
+2018-07-16 16:53:14,771 INFO (StartupInfoLogger.java:57)- Started SubjectserviceApplication in 11.059 seconds (JVM running for 11.575)
+2018-07-16 16:54:25,737 INFO (SpringApplication.java:666)- The following profiles are active: dev
+2018-07-16 16:54:31,708 INFO (StartupInfoLogger.java:57)- Started SubjectserviceApplication in 9.098 seconds (JVM running for 9.609)
+2018-07-16 20:31:05,626 INFO (SpringApplication.java:666)- The following profiles are active: dev
+2018-07-16 20:31:13,561 INFO (StartupInfoLogger.java:57)- Started SubjectserviceApplication in 11.113 seconds (JVM running for 11.624)

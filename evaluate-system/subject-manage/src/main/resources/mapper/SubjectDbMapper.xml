@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hoperun.dao.SubjectDbMapper">
+	<resultMap id="BaseResultMap"
+		type="com.hoperun.entity.SubjectDb">
+		<id column="ID" jdbcType="INTEGER" property="id" />
+		<result column="COL_SUBJECT_DB_NAME" jdbcType="VARCHAR"
+			property="subjectDbName" />
+		<result column="COL_SUBJECT_DB_DESC" jdbcType="VARCHAR"
+			property="subjectDbDesc" />
+		<result column="COL_IS_OPEN" jdbcType="INTEGER"
+			property="isOpen" />
+		<result column="COL_CREATE_TIME" jdbcType="BIGINT"
+			property="createTime" />
+		<result column="COL_UPDATE_TIME" jdbcType="BIGINT"
+			property="updateTime" />
+		<result column="COL_CREATOR_ID" jdbcType="INTEGER"
+			property="creatorId" />
+		<result column="COL_UPDATER_ID" jdbcType="INTEGER"
+			property="updaterId" />
+	</resultMap>
+	<sql id="Base_umn_List">
+		ID, COL_SUBJECT_DB_NAME, COL_SUBJECT_DB_DESC, COL_IS_OPEN,
+		COL_CREATE_TIME, COL_UPDATE_TIME,
+		COL_CREATOR_ID, COL_UPDATER_ID
+	</sql>
+	<select id="selectByPrimaryKey"
+		parameterType="java.lang.Integer" resultMap="BaseResultMap">
+		select
+		<include refid="Base_umn_List" />
+		from TB_SUBJECT_DB
+		where ID = #{id,jdbcType=INTEGER}
+	</select>
+	<select id="getbySubjectName"
+		parameterType="java.lang.String" resultMap="BaseResultMap">
+		select
+		<include refid="Base_umn_List" />
+		from TB_SUBJECT_DB
+		where COL_SUBJECT_DB_NAME = #{subjectDbName,jdbcType=VARCHAR}
+	</select>
+	<select id="querySubjectByOpenStatus"
+		parameterType="java.lang.Integer" resultMap="BaseResultMap">
+		select
+		<include refid="Base_umn_List" />
+		from TB_SUBJECT_DB
+		where COL_IS_OPEN = #{isOpen,jdbcType=VARCHAR}
+	</select>
+	<select id="queryAllSubjectDb" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_umn_List" />
+		from TB_SUBJECT_DB
+	</select>
+	<delete id="deleteByPrimaryKey"
+		parameterType="java.lang.Integer">
+		delete from TB_SUBJECT_DB
+		where ID = #{id,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.hoperun.entity.SubjectDb">
+		insert into TB_SUBJECT_DB (COL_SUBJECT_DB_NAME, COL_SUBJECT_DB_DESC,
+		COL_IS_OPEN, COL_CREATE_TIME, COL_UPDATE_TIME,
+		COL_CREATOR_ID, COL_UPDATER_ID)
+		values (#{subjectDbName,jdbcType=VARCHAR},
+		#{subjectDbDesc,jdbcType=VARCHAR},
+		#{isOpen,jdbcType=INTEGER}, #{createTime,jdbcType=BIGINT}, #{updateTime,jdbcType=BIGINT},
+		#{creatorId,jdbcType=INTEGER}, #{updaterId,jdbcType=INTEGER})
+	</insert>
+
+	<update id="updateByPrimaryKey"
+		parameterType="com.hoperun.entity.SubjectDb">
+		update TB_SUBJECT_DB
+		set COL_SUBJECT_DB_NAME = #{subjectDbName,jdbcType=VARCHAR},
+		COL_SUBJECT_DB_DESC = #{subjectDbDesc,jdbcType=VARCHAR},
+		COL_IS_OPEN = #{isOpen,jdbcType=INTEGER},
+		COL_CREATE_TIME = #{createTime,jdbcType=BIGINT},
+		COL_UPDATE_TIME = #{updateTime,jdbcType=BIGINT},
+		COL_CREATOR_ID = #{creatorId,jdbcType=INTEGER},
+		COL_UPDATER_ID = #{updaterId,jdbcType=INTEGER}
+		where ID = #{id,jdbcType=INTEGER}
+	</update>
+</mapper>

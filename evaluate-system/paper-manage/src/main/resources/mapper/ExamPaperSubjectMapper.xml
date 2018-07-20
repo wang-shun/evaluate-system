@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hoperun.dao.ExamPaperSubjectMapper">
+  <resultMap id="BaseResultMap" type="com.hoperun.entity.ExamPaperSubject">
+    <id column="ID" jdbcType="INTEGER" property="id" />
+    <result column="COL_EXAM_PAPER_ID" jdbcType="INTEGER" property="examPaper" />
+    <result column="COL_SUBJECT_ID" jdbcType="INTEGER" property="subjectId" />
+    <result column="COL_SUBJECT_TYPE" jdbcType="INTEGER" property="subjectType" />
+    <result column="COL_POINT" jdbcType="INTEGER" property="point" />
+    <result column="COL_SUBJECT_ANSWER" jdbcType="INTEGER" property="subjectAnswer" />
+    <result column="COL_SUBMIT_ANSWER" jdbcType="INTEGER" property="submitAnswer" />
+    <result column="COL_IS_CORRECT" jdbcType="INTEGER" property="isCorrect" />
+    <result column="COL_SUBJECT_DETAIL" jdbcType="VARCHAR" property="subjectDetail" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, COL_EXAM_PAPER_ID, COL_SUBJECT_ID, COL_SUBJECT_TYPE, COL_POINT, COL_SUBJECT_ANSWER, 
+    COL_SUBMIT_ANSWER, COL_IS_CORRECT, COL_SUBJECT_DETAIL
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from TB_EXAM_PAPER_SUBJECT
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectBySubjectIdAndPaperId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from TB_EXAM_PAPER_SUBJECT
+    where COL_SUBJECT_ID = #{subjectId,jdbcType=INTEGER} and COL_EXAM_PAPER_ID=#{examPaper,jdbcType=INTEGER}
+  </select>
+  <select id="getSumScore" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    SELECT SUM(COL_POINT*COL_IS_CORRECT) FROM TB_EXAM_PAPER_SUBJECT WHERE COL_EXAM_PAPER_ID=#{examPaper,jdbcType=INTEGER};
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from TB_EXAM_PAPER_SUBJECT
+    where ID = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.hoperun.entity.ExamPaperSubject">
+    insert into TB_EXAM_PAPER_SUBJECT (ID, COL_EXAM_PAPER_ID, COL_SUBJECT_ID, 
+      COL_SUBJECT_TYPE, COL_POINT, COL_SUBJECT_ANSWER, 
+      COL_SUBMIT_ANSWER, COL_IS_CORRECT, COL_SUBJECT_DETAIL
+      )
+    values (#{id,jdbcType=INTEGER}, #{examPaper,jdbcType=INTEGER}, #{subjectId,jdbcType=INTEGER}, 
+      #{subjectType,jdbcType=INTEGER}, #{point,jdbcType=INTEGER}, #{subjectAnswer,jdbcType=INTEGER}, 
+      #{submitAnswer,jdbcType=INTEGER}, #{isCorrect,jdbcType=INTEGER}, #{subjectDetail,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hoperun.entity.ExamPaperSubject">
+    insert into TB_EXAM_PAPER_SUBJECT
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="examPaper != null">
+        COL_EXAM_PAPER_ID,
+      </if>
+      <if test="subjectId != null">
+        COL_SUBJECT_ID,
+      </if>
+      <if test="subjectType != null">
+        COL_SUBJECT_TYPE,
+      </if>
+      <if test="point != null">
+        COL_POINT,
+      </if>
+      <if test="subjectAnswer != null">
+        COL_SUBJECT_ANSWER,
+      </if>
+      <if test="submitAnswer != null">
+        COL_SUBMIT_ANSWER,
+      </if>
+      <if test="isCorrect != null">
+        COL_IS_CORRECT,
+      </if>
+      <if test="subjectDetail != null">
+        COL_SUBJECT_DETAIL,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="examPaper != null">
+        #{examPaper,jdbcType=INTEGER},
+      </if>
+      <if test="subjectId != null">
+        #{subjectId,jdbcType=INTEGER},
+      </if>
+      <if test="subjectType != null">
+        #{subjectType,jdbcType=INTEGER},
+      </if>
+      <if test="point != null">
+        #{point,jdbcType=INTEGER},
+      </if>
+      <if test="subjectAnswer != null">
+        #{subjectAnswer,jdbcType=INTEGER},
+      </if>
+      <if test="submitAnswer != null">
+        #{submitAnswer,jdbcType=INTEGER},
+      </if>
+      <if test="isCorrect != null">
+        #{isCorrect,jdbcType=INTEGER},
+      </if>
+      <if test="subjectDetail != null">
+        #{subjectDetail,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hoperun.entity.ExamPaperSubject">
+    update TB_EXAM_PAPER_SUBJECT
+    <set>
+      <if test="examPaper != null">
+        COL_EXAM_PAPER_ID = #{examPaper,jdbcType=INTEGER},
+      </if>
+      <if test="subjectId != null">
+        COL_SUBJECT_ID = #{subjectId,jdbcType=INTEGER},
+      </if>
+      <if test="subjectType != null">
+        COL_SUBJECT_TYPE = #{subjectType,jdbcType=INTEGER},
+      </if>
+      <if test="point != null">
+        COL_POINT = #{point,jdbcType=INTEGER},
+      </if>
+      <if test="subjectAnswer != null">
+        COL_SUBJECT_ANSWER = #{subjectAnswer,jdbcType=INTEGER},
+      </if>
+      <if test="submitAnswer != null">
+        COL_SUBMIT_ANSWER = #{submitAnswer,jdbcType=INTEGER},
+      </if>
+      <if test="isCorrect != null">
+        COL_IS_CORRECT = #{isCorrect,jdbcType=INTEGER},
+      </if>
+      <if test="subjectDetail != null">
+        COL_SUBJECT_DETAIL = #{subjectDetail,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hoperun.entity.ExamPaperSubject">
+    update TB_EXAM_PAPER_SUBJECT
+    set COL_EXAM_PAPER_ID = #{examPaper,jdbcType=INTEGER},
+      COL_SUBJECT_ID = #{subjectId,jdbcType=INTEGER},
+      COL_SUBJECT_TYPE = #{subjectType,jdbcType=INTEGER},
+      COL_POINT = #{point,jdbcType=INTEGER},
+      COL_SUBJECT_ANSWER = #{subjectAnswer,jdbcType=INTEGER},
+      COL_SUBMIT_ANSWER = #{submitAnswer,jdbcType=INTEGER},
+      COL_IS_CORRECT = #{isCorrect,jdbcType=INTEGER},
+      COL_SUBJECT_DETAIL = #{subjectDetail,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

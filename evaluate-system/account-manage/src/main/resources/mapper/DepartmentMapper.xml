@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hoperun.mapper.DepartmentMapper">
+  <resultMap id="BaseResultMap" type="com.hoperun.dto.Department">
+    <id column="ID" jdbcType="INTEGER" property="id" />
+    <result column="COL_NAME" jdbcType="VARCHAR" property="colName" />
+    <result column="COL_DESC" jdbcType="VARCHAR" property="colDesc" />
+    <result column="COL_PARENT_ID" jdbcType="INTEGER" property="colParentId" />
+    <result column="COL_CREATE_TIME" jdbcType="BIGINT" property="colCreateTime" />
+    <result column="COL_CREATEOR_ID" jdbcType="CHAR" property="colCreateorId" />
+    <result column="COL_UPDATER_ID" jdbcType="CHAR" property="colUpdaterId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, COL_NAME, COL_DESC, COL_PARENT_ID, COL_CREATE_TIME, COL_CREATEOR_ID, COL_UPDATER_ID
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_department
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <!-- 通过父部门查询所有子部门信息 -->
+  <select id="selectByParentId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_department
+    where COL_PARENT_ID = #{colParentId,jdbcType=INTEGER}
+  </select>
+  
+  <!-- 查询所有部门 -->
+  <select id="selectAll" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_department
+    where 1 = 1 
+  </select>
+  
+  <!-- 查询末级部门 -->
+  <select id="selectLastParentId" resultType="java.lang.Integer">
+  select distinct(t.ID) from tb_department t WHERE t.ID NOT IN (select distinct(t.COL_PARENT_ID) from tb_department t)
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from tb_department
+    where ID = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.hoperun.dto.Department">
+    insert into tb_department (ID, COL_NAME, COL_DESC, 
+      COL_PARENT_ID, COL_CREATE_TIME, COL_CREATEOR_ID, 
+      COL_UPDATER_ID)
+    values (#{id,jdbcType=INTEGER}, #{colName,jdbcType=VARCHAR}, #{colDesc,jdbcType=VARCHAR}, 
+      #{colParentId,jdbcType=INTEGER}, #{colCreateTime,jdbcType=BIGINT}, #{colCreateorId,jdbcType=CHAR}, 
+      #{colUpdaterId,jdbcType=CHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hoperun.dto.Department">
+    insert into tb_department
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="colName != null">
+        COL_NAME,
+      </if>
+      <if test="colDesc != null">
+        COL_DESC,
+      </if>
+      <if test="colParentId != null">
+        COL_PARENT_ID,
+      </if>
+      <if test="colCreateTime != null">
+        COL_CREATE_TIME,
+      </if>
+      <if test="colCreateorId != null">
+        COL_CREATEOR_ID,
+      </if>
+      <if test="colUpdaterId != null">
+        COL_UPDATER_ID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="colName != null">
+        #{colName,jdbcType=VARCHAR},
+      </if>
+      <if test="colDesc != null">
+        #{colDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="colParentId != null">
+        #{colParentId,jdbcType=INTEGER},
+      </if>
+      <if test="colCreateTime != null">
+        #{colCreateTime,jdbcType=BIGINT},
+      </if>
+      <if test="colCreateorId != null">
+        #{colCreateorId,jdbcType=CHAR},
+      </if>
+      <if test="colUpdaterId != null">
+        #{colUpdaterId,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hoperun.dto.Department">
+    update tb_department
+    <set>
+      <if test="colName != null">
+        COL_NAME = #{colName,jdbcType=VARCHAR},
+      </if>
+      <if test="colDesc != null">
+        COL_DESC = #{colDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="colParentId != null">
+        COL_PARENT_ID = #{colParentId,jdbcType=INTEGER},
+      </if>
+      <if test="colCreateTime != null">
+        COL_CREATE_TIME = #{colCreateTime,jdbcType=BIGINT},
+      </if>
+      <if test="colCreateorId != null">
+        COL_CREATEOR_ID = #{colCreateorId,jdbcType=CHAR},
+      </if>
+      <if test="colUpdaterId != null">
+        COL_UPDATER_ID = #{colUpdaterId,jdbcType=CHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hoperun.dto.Department">
+    update tb_department
+    set COL_NAME = #{colName,jdbcType=VARCHAR},
+      COL_DESC = #{colDesc,jdbcType=VARCHAR},
+      COL_PARENT_ID = #{colParentId,jdbcType=INTEGER},
+      COL_CREATE_TIME = #{colCreateTime,jdbcType=BIGINT},
+      COL_CREATEOR_ID = #{colCreateorId,jdbcType=CHAR},
+      COL_UPDATER_ID = #{colUpdaterId,jdbcType=CHAR}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

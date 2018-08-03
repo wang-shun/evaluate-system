@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="CctInfoMapper">
+  <resultMap id="BaseResultMap" type="mycat.bean.CctInfo">
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="filepath" jdbcType="VARCHAR" property="filepath" />
+    <result column="addline" jdbcType="INTEGER" property="addline" />
+    <result column="deleteline" jdbcType="INTEGER" property="deleteline" />
+    <result column="modifyline" jdbcType="INTEGER" property="modifyline" />
+  </resultMap>
+  <insert id="insert" parameterType="mycat.bean.CctInfo">
+    insert into cct_info_tb (id, filepath, addline, 
+      deleteline, modifyline)
+    values (#{id,jdbcType=INTEGER}, #{filepath,jdbcType=VARCHAR}, #{addline,jdbcType=INTEGER}, 
+      #{deleteline,jdbcType=INTEGER}, #{modifyline,jdbcType=INTEGER})
+  </insert>
+  
+  <insert id="insertSelective" parameterType="mycat.bean.CctInfo">
+    insert into cct_info_tb
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="filepath != null">
+        filepath,
+      </if>
+      <if test="addline != null">
+        addline,
+      </if>
+      <if test="deleteline != null">
+        deleteline,
+      </if>
+      <if test="modifyline != null">
+        modifyline,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="filepath != null">
+        #{filepath,jdbcType=VARCHAR},
+      </if>
+      <if test="addline != null">
+        #{addline,jdbcType=INTEGER},
+      </if>
+      <if test="deleteline != null">
+        #{deleteline,jdbcType=INTEGER},
+      </if>
+      <if test="modifyline != null">
+        #{modifyline,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+</mapper>

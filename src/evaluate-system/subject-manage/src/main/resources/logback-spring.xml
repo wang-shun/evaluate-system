@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<property name="LOG_PATTERN"
+		value="%-5level|%date|%thread|%-8class{1}:%line|%msg%n" />
+	<property name="LOG_PATTERNITERFACE"
+		value="%date{yyyy-MM-dd HH:mm:ss.SSS}%msg%n" />
+	<property name="LOGFILE_HOME" value="logs/subject-manage" />
+	<!-- %m输出的信息,%p日志级别,%t线程名,%d日期,%c类的全名,%i索引【从数字0开始递增】,,, -->
+	<!-- appender是configuration的子节点，是负责写日志的组件。 -->
+	<!-- ConsoleAppender：把日志输出到控制台 -->
+	<appender name="STDOUT"
+		class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d %p (%file:%line\)- %m%n</pattern>
+			<!-- 控制台也要使用UTF-8，不要使用GBK，否则会中文乱码 -->
+			<charset>UTF-8</charset>
+		</encoder>
+	</appender>
+	<!-- interface log -->
+	<appender name="interfaceLog"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<filter class="com.hoperun.filter.LogFilter" />
+		<file>${LOGFILE_HOME}/interface/interface.log</file>
+		<append>true</append>
+
+		<rollingPolicy
+			class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<fileNamePattern>${LOGFILE_HOME}/interface/interface_%d{yyyyMMddHH}.%i.log
+			</fileNamePattern>
+			<maxHistory>90</maxHistory>
+			<maxFileSize>10MB</maxFileSize>
+			<totalSizeCap>3GB</totalSizeCap>
+		</rollingPolicy>
+
+		<encoder
+			class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>${LOG_PATTERNITERFACE}</pattern>
+		</encoder>
+	</appender>
+
+	<!-- debug log -->
+	<appender name="debugLog"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>DEBUG</level>
+			<onMatch>NEUTRAL</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+
+		<File>${LOGFILE_HOME}/debug/debug.log</File>
+		<Append>true</Append>
+
+		<rollingPolicy
+			class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOGFILE_HOME}/debug/debug_%d{yyyyMMdd}.log
+			</fileNamePattern>
+			<maxHistory>7</maxHistory>
+		</rollingPolicy>
+
+		<encoder
+			class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>${LOG_PATTERN}</pattern>
+		</encoder>
+	</appender>
+
+	<!-- info log -->
+	<appender name="infoLog"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>INFO</level>
+			<onMatch>NEUTRAL</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+
+		<File>${LOGFILE_HOME}/run/info.log</File>
+		<Append>true</Append>
+
+		<rollingPolicy
+			class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOGFILE_HOME}/run/info_%d{yyyyMMdd}.log
+			</fileNamePattern>
+			<maxHistory>7</maxHistory>
+		</rollingPolicy>
+
+		<encoder
+			class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>${LOG_PATTERN}</pattern>
+		</encoder>
+	</appender>
+
+	<!-- warn log -->
+	<appender name="warnLog"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>WARN</level>
+			<onMatch>NEUTRAL</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+
+		<File>${LOGFILE_HOME}/run/warn.log</File>
+		<Append>true</Append>
+
+		<rollingPolicy
+			class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOGFILE_HOME}/run/warn_%d{yyyyMMdd}.log
+			</fileNamePattern>
+			<maxHistory>7</maxHistory>
+		</rollingPolicy>
+
+		<encoder
+			class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>${LOG_PATTERN}</pattern>
+		</encoder>
+	</appender>
+
+	<!-- error log -->
+	<appender name="errorLog"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>ERROR</level>
+			<onMatch>NEUTRAL</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+
+		<File>${LOGFILE_HOME}/error/error.log</File>
+		<Append>true</Append>
+
+		<rollingPolicy
+			class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOGFILE_HOME}/run/error_%d{yyyyMMdd}.log
+			</fileNamePattern>
+			<maxHistory>7</maxHistory>
+		</rollingPolicy>
+
+		<encoder
+			class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>${LOG_PATTERN}</pattern>
+		</encoder>
+	</appender>
+
+	<!-- 下面配置一些第三方包的日志过滤级别，用于避免刷屏 -->
+	<logger name="org.springframework" level="INFO" />
+	<logger name="org.apache" level="WARN" />
+
+
+
+	<logger name="com.hoperun.util.log.InterfaceLog" level="INFO"
+		additivity="false">
+		<appender-ref ref="interfaceLog" />
+	</logger>
+	<!-- 下面配置一些第三方包的日志过滤级别，用于避免刷屏 -->
+	<logger name="org.springframework" level="INFO" />
+	<logger name="org.apache" level="WARN" />
+
+	<root level="DEBUG">
+		<appender-ref ref="debugLog" />
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="infoLog" />
+		<appender-ref ref="warnLog" />
+		<appender-ref ref="errorLog" />
+		<appender-ref ref="interfaceLog" />
+	</root>
+
+	<!-- <root level="INFO"> <appender-ref ref="console" /> <appender-ref ref="interfaceLog" 
+		/> <appender-ref ref="accessLog" /> <appender-ref ref="infoLog" /> <appender-ref 
+		ref="warnLog" /> <appender-ref ref="errorLog" /> </root> -->
+
+	<!-- <root level="ERROR"> <appender-ref ref="errorLog" /> </root> -->
+</configuration>  

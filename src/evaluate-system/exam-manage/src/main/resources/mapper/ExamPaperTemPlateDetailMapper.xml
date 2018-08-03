@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hoperun.mapper.ExamPaperTemPlateDetailMapper">
+  <resultMap id="BaseResultMap" type="com.hoperun.domain.ExamPaperTemPlateDetail">
+    <id column="ID" jdbcType="INTEGER" property="id" />
+    <result column="COL_TEMPLATE_ID" jdbcType="INTEGER" property="colTemplateId" />
+    <result column="COL_TEMPLATE_NAME" jdbcType="VARCHAR" property="colTemplateName" />
+    <result column="COL_SUBJECT_TYPE" jdbcType="INTEGER" property="colSubjectType" />
+    <result column="COL_SUBJECT_COUNT" jdbcType="INTEGER" property="colSubjectCount" />
+    <result column="COL_DIFFICUTE_LEVEL" jdbcType="INTEGER" property="colDifficuteLevel" />
+    <result column="COL_SUBJECT_POINT" jdbcType="INTEGER" property="colSubjectPoint" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, COL_TEMPLATE_ID, COL_TEMPLATE_NAME, COL_SUBJECT_TYPE, COL_SUBJECT_COUNT, COL_DIFFICUTE_LEVEL, 
+    COL_SUBJECT_POINT
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from TB_EXAM_PAPER_TEMPLATE_DETAIL
+    where ID = #{colTemplateId,jdbcType=INTEGER}
+  </select>
+  <select id="listByTemlateId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from TB_EXAM_PAPER_TEMPLATE_DETAIL
+    where COL_TEMPLATE_ID = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll"  resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from TB_EXAM_PAPER_TEMPLATE_DETAIL
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from TB_EXAM_PAPER_TEMPLATE_DETAIL
+    where ID = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByTemplateId" parameterType="java.lang.Integer">
+    delete from TB_EXAM_PAPER_TEMPLATE_DETAIL
+    where COL_TEMPLATE_ID = #{colTemplateId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.hoperun.domain.ExamPaperTemPlateDetail">
+    insert into TB_EXAM_PAPER_TEMPLATE_DETAIL ( COL_TEMPLATE_ID, COL_TEMPLATE_NAME, 
+      COL_SUBJECT_TYPE, COL_SUBJECT_COUNT, COL_DIFFICUTE_LEVEL, 
+      COL_SUBJECT_POINT)
+    values (#{colTemplateId,jdbcType=INTEGER}, #{colTemplateName,jdbcType=VARCHAR}, 
+      #{colSubjectType,jdbcType=INTEGER}, #{colSubjectCount,jdbcType=INTEGER}, #{colDifficuteLevel,jdbcType=INTEGER}, 
+      #{colSubjectPoint,jdbcType=INTEGER})
+  </insert>
+
+  <update id="updateByPrimaryKey" parameterType="com.hoperun.domain.ExamPaperTemPlateDetail">
+    update TB_EXAM_PAPER_TEMPLATE_DETAIL
+    set COL_TEMPLATE_ID = #{colTemplateId,jdbcType=INTEGER},
+      COL_TEMPLATE_NAME = #{colTemplateName,jdbcType=VARCHAR},
+      COL_SUBJECT_TYPE = #{colSubjectType,jdbcType=INTEGER},
+      COL_SUBJECT_COUNT = #{colSubjectCount,jdbcType=INTEGER},
+      COL_DIFFICUTE_LEVEL = #{colDifficuteLevel,jdbcType=INTEGER},
+      COL_SUBJECT_POINT = #{colSubjectPoint,jdbcType=INTEGER}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

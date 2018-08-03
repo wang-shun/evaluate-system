@@ -1,0 +1,24 @@
+配置config->index.js中的proxyTable，内容如下：
+
+proxyTable: {
+      '/api': {
+        target: 'http://120.76.205.241:8000',// 请换成你的地址
+        changeOrigin: true,
+        pathRewrite: {
+          '^/api': '/'
+        }
+      }
+
+},
+
+
+
+在vue文件内：
+ axios.get('api/page/so', {
+      params: {
+        kw: '王卫宁',
+        apikey: 'W5vpsbQTIRVEQttHsxcJvmAKuY2DaQyY9n3CGfqxtVj5vsMwfjxQFg7aiWHyCxj8'
+      }
+    }).then(res => {
+      console.log(res)
+    })

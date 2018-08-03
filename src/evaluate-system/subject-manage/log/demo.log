@@ -1,0 +1,4 @@
+2018-07-17 13:57:09,877 INFO (ImportSubjectServiceImpl.java:63)- insert subject success subjectid is  113
+2018-07-17 13:57:10,039 INFO (ImportSubjectServiceImpl.java:63)- insert subject success subjectid is  114
+2018-07-17 13:57:10,172 INFO (ExcelUtil.java:106)- end to importSubject
+2018-07-17 13:57:58,829 INFO (SpringApplication.java:666)- The following profiles are active: dev

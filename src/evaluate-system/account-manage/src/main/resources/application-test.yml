@@ -1,0 +1,67 @@
+spring:
+  profiles: test
+  application:
+    name: account-manage
+# 数据源
+  datasource:
+      name: test
+      url: jdbc:mysql://${db-hostname}:3306/accountdb?useUnicode=true&characterEncoding=utf-8
+      username: ${db-user}
+      password: ${db-password}
+      type: com.alibaba.druid.pool.DruidDataSource #使用drudi数据源
+      driver-class-name: com.mysql.jdbc.Driver
+      filters: stat,wall,log4j
+      maxActive: 200
+      initialSize: 1
+      maxWait: 60000
+      minIdle: 1
+      timeBetweenEvictionRunsMillis: 60000
+      minEvictableIdleTimeMillis: 300000
+      validationQuery: select 'x'
+      testWhileIdle: true
+      testOnBorrow: false
+      testOnReturn: false
+      poolPreparedStatements: true
+      maxOpenPreparedStatements: 20
+
+# 配置运行端口号
+server:
+  port: 8871
+
+mybatis:
+  mapperLocations: classpath:mapper/*.xml
+  configLocation: classpath:/mybatis-config.xml
+
+# 注册中心配置
+eureka:
+  instance:
+      hostname: localhost
+      port: 8761
+  client:
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:${eureka.instance.port}/eureka/
+      
+# zull 配置
+zuul:
+  routes:
+    exam-manage: /exam-manage/**
+    account-manage: /account-manage/**
+    subject-manage: /subject-manage/**
+    paper-manage: /paper-manage/**
+  add-proxy-headers: true
+  
+ribbon:
+  eureka:
+    enabled: true
+
+#logback配置，开发模式日志级别为 INFO
+logging:
+  level:
+    root: INFO
+    org:
+      springframework:
+        security: DEBUG
+    com:
+      hoperun:
+        mapper: DEBUG
+

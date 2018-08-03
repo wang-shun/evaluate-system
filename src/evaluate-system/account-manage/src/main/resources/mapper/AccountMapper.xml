@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hoperun.mapper.AccountMapper">
+	<resultMap id="BaseResultMap"
+		type="com.hoperun.commons.domain.Account">
+		<id column="ID" jdbcType="CHAR" property="id" />
+		<result column="COL_ACCOUNT_NAME" jdbcType="VARCHAR"
+			property="colAccountName" />
+		<!-- <result column="COL_PASSOWRD" jdbcType="CHAR" property="colPassowrd" 
+			/> -->
+		<result column="COL_ROLE_ID" jdbcType="INTEGER"
+			property="colRoleId" />
+		<result column="COL_FULL_NAME" jdbcType="VARCHAR"
+			property="colFullName" />
+		<result column="COL_MOBILE" jdbcType="VARCHAR"
+			property="colMobile" />
+		<result column="COL_EMAIL" jdbcType="VARCHAR"
+			property="colEmail" />
+		<result column="COL_DEPARTMENT_ID" jdbcType="INTEGER"
+			property="colDepartmentId" />
+		<result column="COL_LEVEL" jdbcType="VARCHAR"
+			property="colLevel" />
+		<result column="COL_CREATE_TIME" jdbcType="BIGINT"
+			property="colCreateTime" />
+		<result column="COL_UPDATE_TIME" jdbcType="BIGINT"
+			property="colUpdateTime" />
+		<result column="COL_CREATOR_ID" jdbcType="CHAR"
+			property="colCreatorId" />
+		<result column="COL_UPDATOR_ID" jdbcType="CHAR"
+			property="colUpdatorId" />
+		<result column="COL_LOGIN_TIME" jdbcType="BIGINT"
+			property="colLoginTime" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		ID, COL_ACCOUNT_NAME, COL_PASSOWRD, COL_ROLE_ID, COL_FULL_NAME,
+		COL_MOBILE, COL_EMAIL,
+		COL_DEPARTMENT_ID, COL_LEVEL, COL_CREATE_TIME, COL_UPDATE_TIME, COL_CREATOR_ID,
+		COL_UPDATOR_ID,
+		COL_LOGIN_TIME
+	</sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from tb_account
+		where ID = #{id,jdbcType=CHAR}
+	</select>
+
+	<!-- 查询一个用户信息 -->
+	<select id="selectOne"
+		parameterType="com.hoperun.commons.domain.Account"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from tb_account
+		where 1 = 1 and
+		<trim prefix="" suffix="" suffixOverrides="and">
+			<if test="id != null">
+				ID = #{id,jdbcType=CHAR} and
+			</if>
+			<if test="colAccountName != null">
+				COL_ACCOUNT_NAME = #{colAccountName,jdbcType=VARCHAR} and
+			</if>
+			<if test="colPassowrd != null">
+				COL_PASSOWRD = PASSWORD(#{colPassowrd,jdbcType=CHAR}) and
+			</if>
+			<if test="colRoleId != null">
+				COL_ROLE_ID = #{colRoleId,jdbcType=INTEGER} and
+			</if>
+			<if test="colFullName != null">
+				COL_FULL_NAME = #{colFullName,jdbcType=VARCHAR} and
+			</if>
+			<if test="colMobile != null">
+				COL_MOBILE = #{colMobile,jdbcType=VARCHAR} and
+			</if>
+			<if test="colEmail != null">
+				COL_EMAIL = #{colEmail,jdbcType=VARCHAR} and
+			</if>
+			<if test="colDepartmentId != null">
+				COL_DEPARTMENT_ID = #{colDepartmentId,jdbcType=INTEGER} and
+			</if>
+			<if test="colLevel != null">
+				COL_LEVEL = #{colLevel,jdbcType=VARCHAR} and
+			</if>
+			<if test="colCreateTime != null">
+				COL_CREATE_TIME = #{colCreateTime,jdbcType=BIGINT} and
+			</if>
+			<if test="colUpdateTime != null">
+				COL_UPDATE_TIME = #{colUpdateTime,jdbcType=BIGINT} and
+			</if>
+			<if test="colCreatorId != null">
+				COL_CREATOR_ID = #{colCreatorId,jdbcType=CHAR} and
+			</if>
+			<if test="colUpdatorId != null">
+				COL_UPDATOR_ID = #{colUpdatorId,jdbcType=CHAR} and
+			</if>
+			<if test="colLoginTime != null">
+				COL_LOGIN_TIME = #{colLoginTime,jdbcType=BIGINT} and
+			</if>
+		</trim>
+		limit 1
+	</select>
+
+
+	<!-- 通过部门id查询其下所有用户信息 -->
+	<select id="selectAllByDepartmentId" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from tb_account
+		<where>
+			<if test="colAccountName!=null and colAccountName!=''">
+			AND	COL_ACCOUNT_NAME like '%${colAccountName}%'
+			</if>
+			<if
+				test="departmentId!=null and departmentId!='' or departmentId==0">
+				AND COL_DEPARTMENT_ID =#{departmentId}
+			</if>
+			<if test="id!=null and id!=''">
+			   AND ID=#{id}
+			</if>
+		</where>
+
+		order by COL_CREATE_TIME desc
+	</select>
+
+
+	<!-- 通过条件查询匹配项 -->
+	<select id="selectBycondition"
+		parameterType="com.hoperun.commons.domain.Account" resultType="map">
+		select count(1) as numSize
+		from tb_account
+		where 1 = 1 and ID = #{id,jdbcType=CHAR} and COL_PASSOWRD =
+		PASSWORD(#{colPassowrd,jdbcType=CHAR}) and COL_ROLE_ID =
+		#{colRoleId,jdbcType=INTEGER}
+	</select>
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from tb_account
+		where ID = #{id,jdbcType=CHAR}
+	</delete>
+	<insert id="insert"
+		parameterType="com.hoperun.commons.domain.Account">
+		insert into tb_account (ID, COL_ACCOUNT_NAME, COL_PASSOWRD,
+		COL_ROLE_ID, COL_FULL_NAME, COL_MOBILE,
+		COL_EMAIL, COL_DEPARTMENT_ID, COL_LEVEL,
+		COL_CREATE_TIME, COL_UPDATE_TIME, COL_CREATOR_ID,
+		COL_UPDATOR_ID, COL_LOGIN_TIME)
+		values (#{id,jdbcType=CHAR}, #{colAccountName,jdbcType=VARCHAR},
+		PASSWORD(#{colPassowrd,jdbcType=CHAR}),
+		#{colRoleId,jdbcType=INTEGER}, #{colFullName,jdbcType=VARCHAR}, #{colMobile,jdbcType=VARCHAR},
+		#{colEmail,jdbcType=VARCHAR}, #{colDepartmentId,jdbcType=INTEGER},
+		#{colLevel,jdbcType=VARCHAR},
+		#{colCreateTime,jdbcType=BIGINT}, #{colUpdateTime,jdbcType=BIGINT}, #{colCreatorId,jdbcType=CHAR},
+		#{colUpdatorId,jdbcType=CHAR}, #{colLoginTime,jdbcType=BIGINT})
+	</insert>
+	<insert id="insertSelective"
+		parameterType="com.hoperun.commons.domain.Account">
+		insert into tb_account
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				ID,
+			</if>
+			<if test="colAccountName != null">
+				COL_ACCOUNT_NAME,
+			</if>
+			<if test="colPassowrd != null">
+				COL_PASSOWRD,
+			</if>
+			<if test="colRoleId != null">
+				COL_ROLE_ID,
+			</if>
+			<if test="colFullName != null">
+				COL_FULL_NAME,
+			</if>
+			<if test="colMobile != null">
+				COL_MOBILE,
+			</if>
+			<if test="colEmail != null">
+				COL_EMAIL,
+			</if>
+			<if test="colDepartmentId != null">
+				COL_DEPARTMENT_ID,
+			</if>
+			<if test="colLevel != null">
+				COL_LEVEL,
+			</if>
+			<if test="colCreateTime != null">
+				COL_CREATE_TIME,
+			</if>
+			<if test="colUpdateTime != null">
+				COL_UPDATE_TIME,
+			</if>
+			<if test="colCreatorId != null">
+				COL_CREATOR_ID,
+			</if>
+			<if test="colUpdatorId != null">
+				COL_UPDATOR_ID,
+			</if>
+			<if test="colLoginTime != null">
+				COL_LOGIN_TIME,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=CHAR},
+			</if>
+			<if test="colAccountName != null">
+				#{colAccountName,jdbcType=VARCHAR},
+			</if>
+			<if test="colPassowrd != null">
+				PASSWORD(#{colPassowrd,jdbcType=CHAR}),
+			</if>
+			<if test="colRoleId != null">
+				#{colRoleId,jdbcType=INTEGER},
+			</if>
+			<if test="colFullName != null">
+				#{colFullName,jdbcType=VARCHAR},
+			</if>
+			<if test="colMobile != null">
+				#{colMobile,jdbcType=VARCHAR},
+			</if>
+			<if test="colEmail != null">
+				#{colEmail,jdbcType=VARCHAR},
+			</if>
+			<if test="colDepartmentId != null">
+				#{colDepartmentId,jdbcType=INTEGER},
+			</if>
+			<if test="colLevel != null">
+				#{colLevel,jdbcType=VARCHAR},
+			</if>
+			<if test="colCreateTime != null">
+				#{colCreateTime,jdbcType=BIGINT},
+			</if>
+			<if test="colUpdateTime != null">
+				#{colUpdateTime,jdbcType=BIGINT},
+			</if>
+			<if test="colCreatorId != null">
+				#{colCreatorId,jdbcType=CHAR},
+			</if>
+			<if test="colUpdatorId != null">
+				#{colUpdatorId,jdbcType=CHAR},
+			</if>
+			<if test="colLoginTime != null">
+				#{colLoginTime,jdbcType=BIGINT},
+			</if>
+		</trim>
+	</insert>
+
+	<!-- 批量更新用户的所属部门 -->
+	<update id="accountToDepartment" parameterType="java.util.Map">
+		update tb_account
+		<set>
+			<if test="departmentId != null">
+				COL_DEPARTMENT_ID = #{departmentId},
+			</if>
+		</set>
+		where ID in (${ids})
+	</update>
+
+
+	<update id="updateByPrimaryKeySelective"
+		parameterType="com.hoperun.commons.domain.Account">
+		update tb_account
+		<set>
+			<if test="colAccountName != null">
+				COL_ACCOUNT_NAME = #{colAccountName,jdbcType=VARCHAR},
+			</if>
+			<if test="colPassowrd != null">
+				COL_PASSOWRD = PASSWORD(#{colPassowrd,jdbcType=CHAR}),
+			</if>
+			<if test="colRoleId != null">
+				COL_ROLE_ID = #{colRoleId,jdbcType=INTEGER},
+			</if>
+			<if test="colFullName != null">
+				COL_FULL_NAME = #{colFullName,jdbcType=VARCHAR},
+			</if>
+			<if test="colMobile != null">
+				COL_MOBILE = #{colMobile,jdbcType=VARCHAR},
+			</if>
+			<if test="colEmail != null">
+				COL_EMAIL = #{colEmail,jdbcType=VARCHAR},
+			</if>
+			<if test="colDepartmentId != null">
+				COL_DEPARTMENT_ID = #{colDepartmentId,jdbcType=INTEGER},
+			</if>
+			<if test="colLevel != null">
+				COL_LEVEL = #{colLevel,jdbcType=VARCHAR},
+			</if>
+			<if test="colCreateTime != null">
+				COL_CREATE_TIME = #{colCreateTime,jdbcType=BIGINT},
+			</if>
+			<if test="colUpdateTime != null">
+				COL_UPDATE_TIME = #{colUpdateTime,jdbcType=BIGINT},
+			</if>
+			<if test="colCreatorId != null">
+				COL_CREATOR_ID = #{colCreatorId,jdbcType=CHAR},
+			</if>
+			<if test="colUpdatorId != null">
+				COL_UPDATOR_ID = #{colUpdatorId,jdbcType=CHAR},
+			</if>
+			<if test="colLoginTime != null">
+				COL_LOGIN_TIME = #{colLoginTime,jdbcType=BIGINT},
+			</if>
+		</set>
+		where ID = #{id,jdbcType=CHAR}
+	</update>
+
+	<!-- 个人修改密码 colFullName保存新密码 -->
+	<update id="updatePassword"
+		parameterType="com.hoperun.commons.domain.Account">
+		update tb_account
+		set COL_PASSOWRD = PASSWORD(#{colFullName,jdbcType=CHAR})
+		where ID = #{id,jdbcType=CHAR}
+		and COL_ROLE_ID = #{colRoleId,jdbcType=INTEGER}
+		and COL_PASSOWRD = PASSWORD(#{colPassowrd,jdbcType=CHAR})
+	</update>
+
+	<!-- 管理员重置用户密码为123456 -->
+	<update id="resetPassword"
+		parameterType="com.hoperun.commons.domain.Account">
+		update tb_account
+		set COL_PASSOWRD = PASSWORD('123456')
+		where ID = #{id,jdbcType=CHAR}
+	</update>
+
+	<update id="updateByPrimaryKey"
+		parameterType="com.hoperun.commons.domain.Account">
+		update tb_account
+		set COL_ACCOUNT_NAME = #{colAccountName,jdbcType=VARCHAR},
+		COL_PASSOWRD = PASSWORD(#{colPassowrd,jdbcType=CHAR}),
+		COL_ROLE_ID = #{colRoleId,jdbcType=INTEGER},
+		COL_FULL_NAME = #{colFullName,jdbcType=VARCHAR},
+		COL_MOBILE = #{colMobile,jdbcType=VARCHAR},
+		COL_EMAIL = #{colEmail,jdbcType=VARCHAR},
+		COL_DEPARTMENT_ID = #{colDepartmentId,jdbcType=INTEGER},
+		COL_LEVEL = #{colLevel,jdbcType=VARCHAR},
+		COL_CREATE_TIME = #{colCreateTime,jdbcType=BIGINT},
+		COL_UPDATE_TIME = #{colUpdateTime,jdbcType=BIGINT},
+		COL_CREATOR_ID = #{colCreatorId,jdbcType=CHAR},
+		COL_UPDATOR_ID = #{colUpdatorId,jdbcType=CHAR},
+		COL_LOGIN_TIME = #{colLoginTime,jdbcType=BIGINT}
+		where ID = #{id,jdbcType=CHAR}
+	</update>
+</mapper>

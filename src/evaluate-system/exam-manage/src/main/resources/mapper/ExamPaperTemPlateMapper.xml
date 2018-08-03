@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hoperun.mapper.ExamPaperTemPlateMapper">
+	<resultMap id="BaseResultMap"
+		type="com.hoperun.domain.ExamPaperTemPlate">
+		<id column="ID" jdbcType="INTEGER" property="id" />
+		<result column="COL_TEMPLATE_NAME" jdbcType="VARCHAR"
+			property="colTemplateName" />
+		<result column="COL_CREATE_TIME" jdbcType="INTEGER"
+			property="colCreateTime" />
+		<result column="COL_CREATOR" jdbcType="VARCHAR"
+			property="colCreator" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		ID, COL_TEMPLATE_NAME, COL_CREATE_TIME, COL_CREATOR
+	</sql>
+	<select id="selectByPrimaryKey"
+		parameterType="java.lang.Integer" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from TB_EXAM_PAPER_TEMPLATE
+		where ID = #{id,jdbcType=INTEGER}
+	</select>
+	<select id="selectAll" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from TB_EXAM_PAPER_TEMPLATE
+		<where>
+			<if test="colTemplateName!=null and colTemplateName!=''">
+				AND T.COL_TEMPLATE_NAME like '%${colTemplateName}%'
+			</if>
+			<if
+				test="colCreator!=null and colCreator!='' ">
+				AND T.COL_CREATOR =#{colCreator}
+			</if>
+		</where>
+		order by COL_CREATE_TIME desc
+	</select>
+	<delete id="deleteByPrimaryKey"
+		parameterType="java.lang.Integer">
+		delete from TB_EXAM_PAPER_TEMPLATE
+		where ID = #{id,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert"
+		parameterType="com.hoperun.domain.ExamPaperTemPlate">
+		insert into TB_EXAM_PAPER_TEMPLATE (COL_TEMPLATE_NAME, COL_CREATE_TIME,
+		COL_CREATOR)
+		values (jdbcType=INTEGER}, #{colTemplateName,jdbcType=VARCHAR},
+		#{colCreateTime,jdbcType=INTEGER},
+		#{colCreator,jdbcType=VARCHAR})
+	</insert>
+	<update id="updateByPrimaryKey"
+		parameterType="com.hoperun.domain.ExamPaperTemPlate">
+		update TB_EXAM_PAPER_TEMPLATE
+		set COL_TEMPLATE_NAME = #{colTemplateName,jdbcType=VARCHAR},
+		COL_CREATE_TIME = #{colCreateTime,jdbcType=INTEGER},
+		COL_CREATOR = #{colCreator,jdbcType=VARCHAR}
+		where ID = #{id,jdbcType=INTEGER}
+	</update>
+</mapper>

@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hoperun.dao.SubjectMapper">
+	<resultMap id="BaseResultMap"
+		type="com.hoperun.entity.Subject">
+		<id column="ID" jdbcType="INTEGER" property="id" />
+		<result column="COL_SUBJECT_CONTENT" jdbcType="VARCHAR"
+			property="subjectContent" />
+		<result column="COL_SUBJECT_DB_ID" jdbcType="INTEGER"
+			property="subjectDbId" />
+		<result column="COL_SUBJECT_TYPE" jdbcType="INTEGER"
+			property="subjectType" />
+		<result column="COL_DEFFICULTY_WEIGHT" jdbcType="INTEGER"
+			property="defficultyWeight" />
+		<result column="COL_IS_OPEN" jdbcType="INTEGER"
+			property="isOpen" />
+		<result column="COL_CREATE_TIME" jdbcType="BIGINT"
+			property="createTime" />
+		<result column="COL_UPDATE_TIME" jdbcType="BIGINT"
+			property="updateTime" />
+		<result column="COL_CREATOR_ID" jdbcType="VARCHAR"
+			property="creatorId" />
+		<result column="COL_UPDATER_ID" jdbcType="VARCHAR"
+			property="updaterId" />
+	</resultMap>
+	<sql id="Base_umn_List">
+		ID, COL_SUBJECT_CONTENT, COL_SUBJECT_DB_ID,
+		COL_SUBJECT_TYPE,
+		COL_DEFFICULTY_WEIGHT,
+		COL_IS_OPEN, COL_CREATE_TIME,
+		COL_UPDATE_TIME, COL_CREATOR_ID, COL_UPDATER_ID
+	</sql>
+	<select id="selectByPrimaryKey"
+		parameterType="java.lang.Integer" resultMap="BaseResultMap">
+		select
+		<include refid="Base_umn_List" />
+		from TB_SUBJECT
+		where ID = #{id,jdbcType=INTEGER}
+	</select>
+	<select id="queyAllSubject" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_umn_List" />
+		from TB_SUBJECT
+	</select>
+	<select id="queySubjectBysubjectDbId"
+		parameterType="java.lang.Integer" resultMap="BaseResultMap">
+		select
+		<include refid="Base_umn_List" />
+		from TB_SUBJECT
+		where COL_SUBJECT_DB_ID =
+		#{subjectDbId,jdbcType=INTEGER}
+	</select>
+	<select id="queySubjectByType" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_umn_List" />
+		from TB_SUBJECT
+		where COL_SUBJECT_TYPE =
+		#{subjectType,jdbcType=INTEGER}
+	</select>
+	<select id="querySubject" resultMap="BaseResultMap">
+		select
+		<include refid="Base_umn_List" />
+		from TB_SUBJECT
+
+		where COL_SUBJECT_DB_ID =#{subjectDbId} AND
+		COL_SUBJECT_TYPE =
+		#{subjectType} AND COL_DEFFICULTY_WEIGHT
+		=#{defficultyWeight} AND COL_IS_OPEN=1 order by rand() LIMIT #{count}
+
+	</select>
+	<select id="queySubjectByContent"  parameterType="com.hoperun.entity.Subject"	resultType="com.hoperun.entity.Subject">
+		SELECT T.ID AS id, DB.COL_SUBJECT_DB_NAME AS subjectDbName
+		,T.COL_SUBJECT_CONTENT AS subjectContent, T.COL_SUBJECT_DB_ID AS
+		subjectDbId,
+		T.COL_SUBJECT_TYPE 
+		AS subjectType,
+		T.COL_DEFFICULTY_WEIGHT
+		AS defficultyWeight,
+		T.COL_IS_OPEN 
+		AS isOpen,
+		T.COL_CREATE_TIME AS
+		createTime, T.COL_UPDATE_TIME AS updateTime, T.COL_CREATOR_ID AS
+		creatorId,
+		T.COL_UPDATER_ID AS updaterId FROM TB_SUBJECT T,
+		TB_SUBJECT_DB DB
+		<where>
+			T.COL_SUBJECT_DB_ID= DB.ID
+	
+			<if test="subjectDbId!=null and subjectDbId!='' or subjectDbId==0">
+				AND T.COL_SUBJECT_DB_ID =#{subjectDbId}
+			</if>
+			<if test="defficultyWeight!=null and defficultyWeight!='' or defficultyWeight==0">
+				AND T.COL_DEFFICULTY_WEIGHT =#{defficultyWeight}
+			</if>
+			  <if test="subjectContent!=null and subjectContent!=''">
+				AND T.COL_SUBJECT_CONTENT like '%${subjectContent}%'
+			</if>
+			<if test="subjectType!=null and subjectType!='' or subjectType==0">
+				AND T.COL_SUBJECT_TYPE =#{subjectType}
+			</if>
+			<if test="isOpen!=null and isOpen!='' or isOpen==0">
+				AND T.COL_IS_OPEN =#{isOpen}
+			</if>
+		</where>
+	</select>
+	<delete id="deleteByPrimaryKey"
+		parameterType="java.lang.Integer">
+		delete from TB_SUBJECT
+		where ID = #{id,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.hoperun.entity.Subject"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into TB_SUBJECT (
+		COL_SUBJECT_CONTENT, COL_SUBJECT_DB_ID,
+		COL_SUBJECT_TYPE,
+		COL_DEFFICULTY_WEIGHT, COL_IS_OPEN,
+		COL_CREATE_TIME, COL_UPDATE_TIME,
+		COL_CREATOR_ID,
+		COL_UPDATER_ID)
+		values (
+		#{subjectContent,jdbcType=VARCHAR},
+		#{subjectDbId,jdbcType=INTEGER},
+		#{subjectType,jdbcType=INTEGER}, #{defficultyWeight,jdbcType=INTEGER},
+		#{isOpen,jdbcType=INTEGER},
+		#{createTime,jdbcType=BIGINT},
+		#{updateTime,jdbcType=BIGINT},
+		#{creatorId,jdbcType=VARCHAR},
+		#{updaterId,jdbcType=VARCHAR})
+	</insert>
+
+	<update id="updateByPrimaryKey"
+		parameterType="com.hoperun.entity.Subject">
+		update TB_SUBJECT
+		set COL_SUBJECT_CONTENT =
+		#{subjectContent,jdbcType=VARCHAR},
+		COL_SUBJECT_DB_ID =
+		#{subjectDbId,jdbcType=INTEGER},
+		COL_SUBJECT_TYPE =
+		#{subjectType,jdbcType=INTEGER},
+		COL_DEFFICULTY_WEIGHT =
+		#{defficultyWeight,jdbcType=INTEGER},
+		COL_IS_OPEN =
+		#{isOpen,jdbcType=INTEGER},
+		COL_CREATE_TIME =
+		#{createTime,jdbcType=BIGINT},
+		COL_UPDATE_TIME =
+		#{updateTime,jdbcType=BIGINT},
+		COL_CREATOR_ID =
+		#{creatorId,jdbcType=VARCHAR},
+		COL_UPDATER_ID =
+		#{updaterId,jdbcType=VARCHAR}
+		where ID = #{id,jdbcType=INTEGER}
+	</update>
+</mapper>

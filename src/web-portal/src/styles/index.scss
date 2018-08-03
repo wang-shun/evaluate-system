@@ -1,0 +1,74 @@
+@import './reset.scss';
+@import './element.scss';
+@import './icon.scss';
+
+
+.fl {
+  float: left;
+}
+
+.fr {
+  float: right;
+}
+
+.clearfix:after{
+  content: "";
+  display: block;
+  clear: both;
+}
+.clearfix{
+  zoom: 1;
+}
+
+a,
+a:focus,
+a:hover {
+  cursor: pointer;
+  color: inherit;
+  text-decoration: none;
+}
+html,
+body,
+#app {
+  height: 100%;
+}
+
+.colorShallowRed{
+  color: #fef0f0
+}
+
+.colorShallowYellow{
+  color: #fdf6ec
+}
+
+.colorShallowBlue{
+  color: #ecf5ff
+}
+
+.colorShallowGreen{
+  color: #f0f9eb
+}
+
+.colorShallowGray{
+  color: #f4f4f5
+}
+
+.colorDeepRed{
+  color: #f56c6c
+}
+
+.colorDeepYellow{
+  color: #e6a23c
+}
+
+.colorDeepBlue{
+  color: #409eff
+}
+
+.colorDeepGreen{
+  color: #67c23a
+}
+
+.colorDeepGray{
+  color: #909399
+}

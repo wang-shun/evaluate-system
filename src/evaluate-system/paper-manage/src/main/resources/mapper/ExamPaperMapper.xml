@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hoperun.dao.ExamPaperMapper">
+  <resultMap id="BaseResultMap" type="com.hoperun.entity.ExamPaper">
+    <id column="ID" jdbcType="INTEGER" property="id" />
+    <result column="COL_PAPER_NAME" jdbcType="VARCHAR" property="paperName" />
+    <result column="COL_PAPER_OWNER_ID" jdbcType="CHAR" property="paperOwnerId" />
+    <result column="COL_EXAM_ID" jdbcType="VARCHAR" property="examId" />
+    <result column="COL_PAPER_ID" jdbcType="INTEGER" property="paperId" />
+    <result column="COL_SCORE" jdbcType="INTEGER" property="score" />
+    <result column="COL_PAPER_STATUS" jdbcType="INTEGER" property="paperStatus" />
+    <result column="COL_PAPER_STATUS_DESC" jdbcType="VARCHAR" property="paperStatusDesc" />
+    <result column="COL_START_TIME" jdbcType="BIGINT" property="startTime" />
+    <result column="COL_END_TIME" jdbcType="BIGINT" property="endTime" />
+    <result column="COL_SUBMIT_TIME" jdbcType="BIGINT" property="submitTime" />
+    <result column="COL_IPADDR" jdbcType="VARCHAR" property="ipaddr" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, COL_PAPER_NAME, COL_PAPER_OWNER_ID, COL_EXAM_ID, COL_SCORE, COL_PAPER_STATUS, 
+    COL_PAPER_STATUS_DESC, COL_START_TIME, COL_END_TIME, COL_SUBMIT_TIME, COL_IPADDR,COL_PAPER_ID
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from TB_EXAM_PAPER
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <!-- 通过账户查询已经参加的考试 -->
+  <select id="getExamAccountList" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from TB_EXAM_PAPER
+    where 1=1 
+    <if test="_parameter != null and _parameter != ''">
+    and COL_PAPER_OWNER_ID = #{accountId,jdbcType=CHAR}
+    </if>
+  </select>
+  
+  <!-- 通过试卷id查询这份试卷考试情况 -->
+  <select id="getExamListByExamId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from TB_EXAM_PAPER
+    where 1=1 
+    <if test="_parameter != null and _parameter != ''">
+    and COL_EXAM_ID = #{examIdStr,jdbcType=VARCHAR}
+    </if>
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from TB_EXAM_PAPER
+    where ID = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.hoperun.entity.ExamPaper"
+   useGeneratedKeys="true" keyProperty="id">
+    insert into TB_EXAM_PAPER ( COL_PAPER_NAME, COL_PAPER_OWNER_ID, 
+      COL_EXAM_ID, COL_SCORE, COL_PAPER_STATUS, 
+      COL_PAPER_STATUS_DESC, COL_START_TIME, COL_END_TIME, 
+      COL_SUBMIT_TIME, COL_IPADDR,COL_PAPER_ID)
+    values ( #{paperName,jdbcType=VARCHAR}, #{paperOwnerId,jdbcType=CHAR}, 
+      #{examId,jdbcType=VARCHAR}, #{score,jdbcType=INTEGER}, #{paperStatus,jdbcType=INTEGER}, 
+      #{paperStatusDesc,jdbcType=VARCHAR}, #{startTime,jdbcType=BIGINT}, #{endTime,jdbcType=BIGINT}, 
+      #{submitTime,jdbcType=BIGINT}, #{ipaddr,jdbcType=VARCHAR},#{paperId,jdbcType=BIGINT})
+  </insert>
+ 
+  <update id="updateByPrimaryKeySelective" parameterType="com.hoperun.entity.ExamPaper">
+    update TB_EXAM_PAPER
+    <set>
+      <if test="paperName != null">
+        COL_PAPER_NAME = #{paperName,jdbcType=VARCHAR},
+      </if>
+      <if test="paperOwnerId != null">
+        COL_PAPER_OWNER_ID = #{paperOwnerId,jdbcType=CHAR},
+      </if>
+      <if test="examId != null">
+        COL_EXAM_ID = #{examId,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null">
+        COL_SCORE = #{score,jdbcType=INTEGER},
+      </if>
+      <if test="paperStatus != null">
+        COL_PAPER_STATUS = #{paperStatus,jdbcType=INTEGER},
+      </if>
+      <if test="paperStatusDesc != null">
+        COL_PAPER_STATUS_DESC = #{paperStatusDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="startTime != null">
+        COL_START_TIME = #{startTime,jdbcType=BIGINT},
+      </if>
+      <if test="endTime != null">
+        COL_END_TIME = #{endTime,jdbcType=BIGINT},
+      </if>
+      <if test="submitTime != null">
+        COL_SUBMIT_TIME = #{submitTime,jdbcType=BIGINT},
+      </if>
+      <if test="ipaddr != null">
+        COL_IPADDR = #{ipaddr,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hoperun.entity.ExamPaper">
+    update TB_EXAM_PAPER
+    set COL_PAPER_NAME = #{paperName,jdbcType=VARCHAR},
+      COL_PAPER_OWNER_ID = #{paperOwnerId,jdbcType=CHAR},
+      COL_EXAM_ID = #{examId,jdbcType=VARCHAR},
+      COL_SCORE = #{score,jdbcType=INTEGER},
+      COL_PAPER_STATUS = #{paperStatus,jdbcType=INTEGER},
+      COL_PAPER_STATUS_DESC = #{paperStatusDesc,jdbcType=VARCHAR},
+      COL_START_TIME = #{startTime,jdbcType=BIGINT},
+      COL_END_TIME = #{endTime,jdbcType=BIGINT},
+      COL_SUBMIT_TIME = #{submitTime,jdbcType=BIGINT},
+      COL_IPADDR = #{ipaddr,jdbcType=VARCHAR},
+      COL_PAPER_ID = #{paperId,jdbcType=BIGINT}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

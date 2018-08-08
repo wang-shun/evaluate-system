@@ -39,7 +39,10 @@ public class Main
         System.out.println("Work path is:"+rootPath);
         
         // 步骤0
-        Map<String, String> prop = PropertiesUtil.get(rootPath.concat("mycat.properties"));//"D:\\mycat\\mycat.properties"; 
+        Map<String, String> prop = PropertiesUtil.get("D:\\mycat\\mycat.properties");//"D:\\mycat\\mycat.properties"; rootPath.concat("mycat.properties")
+//        System.exit(0);
+        
+        
         String cctReportPath = prop.get(PROP.cct_report_xls.getKey());
         String commitLogPath = prop.get(PROP.commit_log_path.getKey());
         String mycatReportPath = prop.get(PROP.mycat_report_xls_path.getKey());
@@ -99,7 +102,7 @@ public class Main
         // 步骤5
         new ExportReport(newId, mycatReportPath).work();
         
-        System.out.println("Total toast time is:"+(System.currentTimeMillis() - startTime)/1000+" minutes.");
+        System.out.println("Total toast time is:"+(System.currentTimeMillis() - startTime)/1000+" seconds.");
     }
     
 }

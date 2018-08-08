@@ -20,6 +20,18 @@ public class CatInfo {
     private Integer addline;
 
     private Integer deleteline;
+    
+    private String filetype;
+
+    public String getFiletype()
+    {
+        return filetype;
+    }
+
+    public void setFiletype(String filetype)
+    {
+        this.filetype = filetype;
+    }
 
     public String getProductid() {
         return productid;

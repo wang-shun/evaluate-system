@@ -10,6 +10,18 @@ public class SingleFileAuthor {
     private Integer addline;
 
     private Integer deleteline;
+    
+    private String filetype;
+
+    public String getFiletype()
+    {
+        return filetype;
+    }
+
+    public void setFiletype(String filetype)
+    {
+        this.filetype = filetype;
+    }
 
     public Integer getId() {
         return id;

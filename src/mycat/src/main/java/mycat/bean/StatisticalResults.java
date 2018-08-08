@@ -19,6 +19,18 @@ public class StatisticalResults
     private Integer deletesum;
     
     private Integer modifysum;
+    
+    private String filetype;
+
+    public String getFiletype()
+    {
+        return filetype;
+    }
+
+    public void setFiletype(String filetype)
+    {
+        this.filetype = filetype;
+    }
 
     public Integer getId()
     {

@@ -1,9 +1,8 @@
 package mycat.utils;
 
-import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -24,15 +23,14 @@ public class PropertiesUtil
     {
         Map<String, String> out = new HashMap<String, String>();
         Properties prop = new Properties();
-        InputStream in = null;
+        InputStreamReader reader = null;
+        FileInputStream in = null;
         try
         {
+            in = new FileInputStream(filePath);
+            reader = new InputStreamReader(in, "UTF-8");
+            prop.load(reader);
             
-            //读取属性文件properties
-            in = new BufferedInputStream(new FileInputStream(filePath));
-            
-            //加载属性列表
-            prop.load(in);
             Iterator<String> it = prop.stringPropertyNames().iterator();
             while (it.hasNext())
             {
@@ -47,6 +45,18 @@ public class PropertiesUtil
         }
         finally
         {
+            if (null != reader)
+            {
+                try
+                {
+                    reader.close();
+                }
+                catch (IOException e)
+                {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
             if (null != in)
             {
                 try

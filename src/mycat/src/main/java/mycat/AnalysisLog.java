@@ -57,7 +57,7 @@ public class AnalysisLog
         
         // 计算单次分析时间段类各个文件修改总数，被各个用户修改总数
         analysisCommitLog(analysisId);
-        System.out.println("AnalysisLog toast time is:" + (System.currentTimeMillis() - startTime) / 1000 + " minutes.");
+        System.out.println("AnalysisLog toast time is:" + (System.currentTimeMillis() - startTime) / 1000 + " seconds.");
     }
     
     private void analysisCommitLog(int analysisId)
@@ -234,6 +234,7 @@ public class AnalysisLog
             String[] splits = null;
             String[] splitstt = null;
             CatInfo oneInfo = null;
+            String suffix = null;
             
             //循环读取  
             while ((temp = raf.readLine()) != null)
@@ -252,7 +253,8 @@ public class AnalysisLog
                     }
                     for (int i = 1; i < data.size(); i++)
                     {
-                        if (FileType.isContain(GitLogUtil.suffix(data.get(i)), fileType))
+                        suffix = GitLogUtil.suffix(data.get(i));
+                        if (FileType.isContain(suffix, fileType))
                         {
                             splitstt = data.get(i).split("\\t");//GitLogUtil.split(data.get(i));
                             oneInfo = new CatInfo();
@@ -262,6 +264,7 @@ public class AnalysisLog
                             oneInfo.setAddline(Integer.parseInt(splitstt[0]));
                             oneInfo.setDeleteline(Integer.parseInt(splitstt[1]));
                             oneInfo.setFilepath(splitstt[2].toLowerCase());
+                            oneInfo.setFiletype(suffix);
                             catInfos.add(oneInfo);
                         }
                     }

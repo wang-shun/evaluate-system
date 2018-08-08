@@ -1,111 +1,156 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="CatInfoMapper">
-  <resultMap id="BaseResultMap" type="mycat.bean.CatInfo">
-    <result column="productid" jdbcType="VARCHAR" property="productid" />
-    <result column="authorid" jdbcType="VARCHAR" property="authorid" />
-    <result column="committime" jdbcType="DATE" property="committime" />
-    <result column="filepath" jdbcType="VARCHAR" property="filepath" />
-    <result column="addline" jdbcType="INTEGER" property="addline" />
-    <result column="deleteline" jdbcType="INTEGER" property="deleteline" />
-  </resultMap>
-  <insert id="insert" parameterType="mycat.bean.CatInfo">
-    insert into cat_info_tb (productid, authorid, committime, 
-      filepath, addline, deleteline
-      )
-    values (#{productid,jdbcType=VARCHAR}, #{authorid,jdbcType=VARCHAR}, #{committime,jdbcType=DATE}, 
-      #{filepath,jdbcType=VARCHAR}, #{addline,jdbcType=INTEGER}, #{deleteline,jdbcType=INTEGER}
-      )
-  </insert>
-  
-  <!-- 通过产品ID查询Git log入库数据最后分析时间 -->
-  <select id="getLatestCommitTime" parameterType="java.util.Map" resultType="mycat.bean.CatInfo">
-  select max(t.committime) as committime  from cat_info_tb t where t.productid = #{productId}
-  </select>
-  
-  <!-- 通过时间段从cat_info_tb获取一个文件在此时间段内修改的总量信息 -->
-  <select id="selectFileTotalModify" parameterType="java.util.Map" resultType="mycat.bean.SingleFileTotle">
-    select t.filepath as filepath, sum(t.addline) as totleaddline, sum(t.deleteline) as totledeleteline 
-    from cat_info_tb t 
-    where t.committime BETWEEN  #{begintime} and #{endtime} 
-    group by t.filepath
-  </select>
-  
-  <!-- 通过时间段从cat_info_tb获取一个文件在此时间段内各个作者修改的总量信息 -->
-  <select id="selectFileTotalAuthor" parameterType="java.util.Map" resultType="mycat.bean.SingleFileAuthor">
-    select t.filepath as filepath, t.authorid as authorid, sum(t.addline) as addline, sum(t.deleteline) as deleteline 
-    from cat_info_tb t 
-    where t.committime BETWEEN  #{begintime} and #{endtime} 
-    group by t.filepath, t.authorid
-  </select>
-  
-  <!-- 根据分析ID获取这段时间段内各作者的工作量 -->
-  <select id="getWorkloadData" parameterType="java.util.Map" resultType="mycat.bean.StatisticalResults">
-	select boo.id as id
-	, boo.authorid as authorid
-	, sum(boo.addone) as addsum
-	, sum(boo.deleteone) as deletesum
-	, sum(boo.modifyone) as modifysum
-	from
-	(select y.id as id
-	, y.authorid as authorid
-	, (y.addline/foo.totleaddline)*foo.addline as addone
-	, (y.deleteline/foo.totledeleteline)*foo.deleteline as deleteone
-	, (y.addline/foo.totleaddline)*foo.modifyline as modifyone
-	from single_file_author_tb y,
-	(select t.id as id, t.filepath as filepath
-	, t.totleaddline as totleaddline
-	, t.totledeleteline as totledeleteline
-	, f.addline as addline
-	, f.deleteline as deleteline
-	, f.modifyline as modifyline
-	from single_file_totle_tb t, cct_info_tb f
-	where t.id = f.id and t.filepath = f.filepath and t.id = #{analysisId}) foo
-	where y.id = foo.id and y.filepath = foo.filepath) boo
-	group by boo.authorid
-</select>
-  
-  <insert id="insertSelective" parameterType="mycat.bean.CatInfo">
-    insert into cat_info_tb
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="productid != null">
-        productid,
-      </if>
-      <if test="authorid != null">
-        authorid,
-      </if>
-      <if test="committime != null">
-        committime,
-      </if>
-      <if test="filepath != null">
-        filepath,
-      </if>
-      <if test="addline != null">
-        addline,
-      </if>
-      <if test="deleteline != null">
-        deleteline,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="productid != null">
-        #{productid,jdbcType=VARCHAR},
-      </if>
-      <if test="authorid != null">
-        #{authorid,jdbcType=VARCHAR},
-      </if>
-      <if test="committime != null">
-        #{committime,jdbcType=DATE},
-      </if>
-      <if test="filepath != null">
-        #{filepath,jdbcType=VARCHAR},
-      </if>
-      <if test="addline != null">
-        #{addline,jdbcType=INTEGER},
-      </if>
-      <if test="deleteline != null">
-        #{deleteline,jdbcType=INTEGER},
-      </if>
-    </trim>
-  </insert>
+	<resultMap id="BaseResultMap" type="mycat.bean.CatInfo">
+		<result column="productid" jdbcType="VARCHAR" property="productid" />
+		<result column="authorid" jdbcType="VARCHAR" property="authorid" />
+		<result column="committime" jdbcType="DATE" property="committime" />
+		<result column="filepath" jdbcType="VARCHAR" property="filepath" />
+		<result column="addline" jdbcType="INTEGER" property="addline" />
+		<result column="deleteline" jdbcType="INTEGER" property="deleteline" />
+		<result column="filetype" jdbcType="VARCHAR" property="filetype" />
+	</resultMap>
+	<insert id="insert" parameterType="mycat.bean.CatInfo">
+		insert into cat_info_tb (productid, authorid, committime,
+		filepath, addline, deleteline, filetype
+		)
+		values (#{productid,jdbcType=VARCHAR}, #{authorid,jdbcType=VARCHAR},
+		#{committime,jdbcType=DATE},
+		#{filepath,jdbcType=VARCHAR}, #{addline,jdbcType=INTEGER}, #{deleteline,jdbcType=INTEGER},
+		#{filetype,jdbcType=VARCHAR}
+		)
+	</insert>
+
+	<!-- 通过产品ID查询Git log入库数据最后分析时间 -->
+	<select id="getLatestCommitTime" parameterType="java.util.Map"
+		resultType="mycat.bean.CatInfo">
+		select max(t.committime) as committime from cat_info_tb t where t.productid
+		= #{productId}
+	</select>
+
+	<!-- 通过时间段从cat_info_tb获取一个文件在此时间段内修改的总量信息 -->
+	<select id="selectFileTotalModify" parameterType="java.util.Map"
+		resultType="mycat.bean.SingleFileTotle">
+		select t.filepath as filepath, t.filetype as filetype, sum(t.addline) as
+		totleaddline, sum(t.deleteline) as totledeleteline
+		from cat_info_tb t
+		where t.committime BETWEEN #{begintime} and #{endtime}
+		group by t.filepath
+	</select>
+
+	<!-- 通过时间段从cat_info_tb获取一个文件在此时间段内各个作者修改的总量信息 -->
+	<select id="selectFileTotalAuthor" parameterType="java.util.Map"
+		resultType="mycat.bean.SingleFileAuthor">
+		select t.filepath as filepath, t.filetype as filetype, t.authorid as
+		authorid, sum(t.addline) as addline, sum(t.deleteline) as deleteline
+		from cat_info_tb t
+		where t.committime BETWEEN #{begintime} and #{endtime}
+		group by t.filepath, t.authorid
+	</select>
+
+	<!-- 根据分析ID获取这段时间段内各作者的工作量 -->
+	<select id="getWorkloadData" parameterType="java.util.Map"
+		resultType="mycat.bean.StatisticalResults">
+		select boo.id as id
+		, boo.authorid as authorid
+		, sum(boo.addone) as addsum
+		, sum(boo.deleteone) as deletesum
+		, sum(boo.modifyone) as modifysum
+		from
+		(select y.id as id
+		, y.authorid as authorid
+		, (y.addline/foo.totleaddline)*foo.addline as addone
+		, (y.deleteline/foo.totledeleteline)*foo.deleteline as deleteone
+		, (y.addline/foo.totleaddline)*foo.modifyline as modifyone
+		from single_file_author_tb y,
+		(select t.id as id, t.filepath as filepath
+		, t.totleaddline as totleaddline
+		, t.totledeleteline as totledeleteline
+		, f.addline as addline
+		, f.deleteline as deleteline
+		, f.modifyline as modifyline
+		from single_file_totle_tb t, cct_info_tb f
+		where t.id = f.id and t.filepath = f.filepath and t.id = #{analysisId}) foo
+		where y.id = foo.id and y.filepath = foo.filepath) boo
+		group by boo.authorid
+	</select>
+
+	<!-- 根据分析ID获取这段时间段内各作者操作的各类型文件的工作量 -->
+	<select id="getWorkloadDataOfFileType" parameterType="java.util.Map"
+		resultType="mycat.bean.StatisticalResults">
+		select boo.id as id
+		, boo.authorid as authorid
+		, boo.filetype as filetype 
+		, sum(boo.addone) as addsum
+		, sum(boo.deleteone) as deletesum
+		, sum(boo.modifyone) as modifysum
+		from
+		(select y.id as id
+		, y.filetype as filetype
+		, y.authorid as authorid
+		, (y.addline/foo.totleaddline)*foo.addline as addone
+		, (y.deleteline/foo.totledeleteline)*foo.deleteline as deleteone
+		, (y.addline/foo.totleaddline)*foo.modifyline as modifyone
+		from single_file_author_tb y,
+		(select t.id as id, t.filepath as filepath
+		, t.totleaddline as totleaddline
+		, t.totledeleteline as totledeleteline
+		, f.addline as addline
+		, f.deleteline as deleteline
+		, f.modifyline as modifyline
+		from single_file_totle_tb t, cct_info_tb f
+		where t.id = f.id and t.filepath = f.filepath and t.id = #{analysisId}) foo
+		where y.id = foo.id and y.filepath = foo.filepath) boo
+		group by boo.authorid, boo.filetype
+	</select>
+
+	<insert id="insertSelective" parameterType="mycat.bean.CatInfo">
+		insert into cat_info_tb
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="productid != null">
+				productid,
+			</if>
+			<if test="authorid != null">
+				authorid,
+			</if>
+			<if test="committime != null">
+				committime,
+			</if>
+			<if test="filepath != null">
+				filepath,
+			</if>
+			<if test="addline != null">
+				addline,
+			</if>
+			<if test="deleteline != null">
+				deleteline,
+			</if>
+			<if test="filetype != null">
+				filetype,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="productid != null">
+				#{productid,jdbcType=VARCHAR},
+			</if>
+			<if test="authorid != null">
+				#{authorid,jdbcType=VARCHAR},
+			</if>
+			<if test="committime != null">
+				#{committime,jdbcType=DATE},
+			</if>
+			<if test="filepath != null">
+				#{filepath,jdbcType=VARCHAR},
+			</if>
+			<if test="addline != null">
+				#{addline,jdbcType=INTEGER},
+			</if>
+			<if test="deleteline != null">
+				#{deleteline,jdbcType=INTEGER},
+			</if>
+			<if test="filetype != null">
+				#{filetype,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
 </mapper>

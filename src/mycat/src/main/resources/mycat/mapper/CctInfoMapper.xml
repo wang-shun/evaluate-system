@@ -7,12 +7,13 @@
     <result column="addline" jdbcType="INTEGER" property="addline" />
     <result column="deleteline" jdbcType="INTEGER" property="deleteline" />
     <result column="modifyline" jdbcType="INTEGER" property="modifyline" />
+    <result column="filetype" jdbcType="VARCHAR" property="filetype" />
   </resultMap>
   <insert id="insert" parameterType="mycat.bean.CctInfo">
     insert into cct_info_tb (id, filepath, addline, 
-      deleteline, modifyline)
+      deleteline, modifyline, filetype)
     values (#{id,jdbcType=INTEGER}, #{filepath,jdbcType=VARCHAR}, #{addline,jdbcType=INTEGER}, 
-      #{deleteline,jdbcType=INTEGER}, #{modifyline,jdbcType=INTEGER})
+      #{deleteline,jdbcType=INTEGER}, #{modifyline,jdbcType=INTEGER}, #{filetype,jdbcType=VARCHAR})
   </insert>
   
   <insert id="insertSelective" parameterType="mycat.bean.CctInfo">
@@ -33,6 +34,9 @@
       <if test="modifyline != null">
         modifyline,
       </if>
+      <if test="filetype != null">
+        filetype,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -49,6 +53,9 @@
       </if>
       <if test="modifyline != null">
         #{modifyline,jdbcType=INTEGER},
+      </if>
+      <if test="filetype != null">
+        #{filetype,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>

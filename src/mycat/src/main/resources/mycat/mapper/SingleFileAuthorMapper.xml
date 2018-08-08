@@ -7,12 +7,13 @@
     <result column="authorid" jdbcType="VARCHAR" property="authorid" />
     <result column="addline" jdbcType="INTEGER" property="addline" />
     <result column="deleteline" jdbcType="INTEGER" property="deleteline" />
+    <result column="filetype" jdbcType="VARCHAR" property="filetype" />
   </resultMap>
   <insert id="insert" parameterType="mycat.bean.SingleFileAuthor">
     insert into single_file_author_tb (id, filepath, authorid, 
-      addline, deleteline)
+      addline, deleteline, filetype)
     values (#{id,jdbcType=INTEGER}, #{filepath,jdbcType=VARCHAR}, #{authorid,jdbcType=VARCHAR}, 
-      #{addline,jdbcType=INTEGER}, #{deleteline,jdbcType=INTEGER})
+      #{addline,jdbcType=INTEGER}, #{deleteline,jdbcType=INTEGER}, #{filetype,jdbcType=VARCHAR})
   </insert>
   
   <insert id="insertSelective" parameterType="mycat.bean.SingleFileAuthor">
@@ -33,6 +34,9 @@
       <if test="deleteline != null">
         deleteline,
       </if>
+      <if test="filetype != null">
+        filetype,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -49,6 +53,9 @@
       </if>
       <if test="deleteline != null">
         #{deleteline,jdbcType=INTEGER},
+      </if>
+      <if test="filetype != null">
+        #{filetype,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>

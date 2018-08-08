@@ -47,11 +47,43 @@ public class ExportReport
     {
         long startTime = System.currentTimeMillis();
         // 执行SQL查询数据
-        List<StatisticalResults> data = getData(analysisId);
+        List<StatisticalResults> dataAll = getTotalWorkData(analysisId);
+        List<StatisticalResults> dataOfFileType = getWorkDataOfFileType(analysisId);
+        
+        
+        HSSFWorkbook workbook = new HSSFWorkbook(); // 创建工作簿对象
         
         // 将数据导出
-        makeReport(createFilePath, data);
-        System.out.println("ExportReport toast time is:" + (System.currentTimeMillis() - startTime) / 1000 + " minutes.");
+        makeAllReport(workbook, dataAll);
+        makeOfFileTypeReport(workbook, dataOfFileType);
+        if (workbook != null)
+        {
+            FileOutputStream out = null;
+            try
+            {
+                out = new FileOutputStream(createFilePath + "/" + "mycat.xls");
+                workbook.write(out);
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+            finally
+            {
+                if (null != out)
+                {
+                    try
+                    {
+                        out.close();
+                    }
+                    catch (IOException e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+        System.out.println("ExportReport toast time is:" + (System.currentTimeMillis() - startTime) / 1000 + " seconds.");
     }
     
     /**
@@ -60,7 +92,7 @@ public class ExportReport
      * @param analysisId
      * @return
      */
-    private List<StatisticalResults> getData(int analysisId)
+    private List<StatisticalResults> getTotalWorkData(int analysisId)
     {
         List<StatisticalResults> out = new ArrayList<StatisticalResults>();
         SqlSessionFactory sf = SingletonSession.getInstance().getSf();
@@ -83,18 +115,43 @@ public class ExportReport
     }
     
     /**
-     * 生成xls报告
+     * 根据分析ID查询这次下所有作者各类型文件的工作量数据
+     * <功能详细描述>
+     * @param analysisId
+     * @return
+     */
+    private List<StatisticalResults> getWorkDataOfFileType(int analysisId)
+    {
+        List<StatisticalResults> out = new ArrayList<StatisticalResults>();
+        SqlSessionFactory sf = SingletonSession.getInstance().getSf();
+        SqlSession session = null;
+        try
+        {
+            session = sf.openSession();
+            Map<String, Object> para = new HashMap<String, Object>();
+            para.put("analysisId", analysisId);
+            out = session.selectList("CatInfoMapper.getWorkloadDataOfFileType", para);
+        }
+        finally
+        {
+            if (null != session)
+            {
+                session.close();
+            }
+        }
+        return out;
+    }
+    
+    /**
+     * 生成xls报告的工作总量sheet
      * <功能详细描述>
      * @param createFilePath
      * @param data
      */
-    private void makeReport(String createFilePath, List<StatisticalResults> data)
+    private void makeAllReport(HSSFWorkbook workbook, List<StatisticalResults> data)
     {
         if (data != null && data.size() > 0)
         {
-            try
-            {
-                HSSFWorkbook workbook = new HSSFWorkbook(); // 创建工作簿对象
                 HSSFSheet sheet = workbook.createSheet("个人工作量"); // 创建工作表
                 sheet.setColumnWidth(0, 9000); // 第一列列宽加长
                 sheet.setColumnWidth(1, 4500); // 第二列列宽加长
@@ -149,33 +206,80 @@ public class ExportReport
                     cell.setCellValue(obj.getDeletesum());
                     cell.setCellStyle(style);
                 }
+        }
+    }
+    
+    /**
+     * 生成作者的各文件类型的工作量sheet
+     * <功能详细描述>
+     * @param createFilePath
+     * @param data
+     */
+    private void makeOfFileTypeReport(HSSFWorkbook workbook, List<StatisticalResults> data)
+    {
+        if (data != null && data.size() > 0)
+        {
+                HSSFSheet sheet = workbook.createSheet("个人各文件类型工作量"); // 创建工作表
+                sheet.setColumnWidth(0, 9000); // 第一列列宽加长
+                sheet.setColumnWidth(1, 4500); // 第二列列宽加长
+                sheet.setColumnWidth(2, 4500); // 第三列列宽加长
+                sheet.setColumnWidth(3, 4500); // 第四列列宽加长
                 
-                if (workbook != null)
+                HSSFCellStyle columnTopStyle = this.getColumnTopStyle(workbook);
+                HSSFCellStyle style = this.getStyle(workbook);
+                
+                // 定义所需列数
+                String[] rowName = {"作者", "文件类型", "新增行数", "修改行数", "删除行数"};
+                int columnNum = rowName.length;
+                HSSFRow rowRowName = sheet.createRow(0); // 在索引1的位置创建行(最顶端的行开始的第一行)
+                
+                rowRowName.setHeight((short)(25 * 30)); //设置高度
+                
+                // 将列头设置到sheet的单元格中
+                for (int n = 0; n < columnNum; n++)
                 {
-                    FileOutputStream out = null;
-                    try
-                    {
-                        out = new FileOutputStream(createFilePath + "/" + "mycat.xls");
-                        workbook.write(out);
-                    }
-                    catch (IOException e)
-                    {
-                        e.printStackTrace();
-                    }
-                    finally
-                    {
-                        if (null != out)
-                        {
-                            out.close();
-                        }
-                    }
+                    HSSFCell cellRowName = rowRowName.createCell(n); //创建列头对应个数的单元格
+                    cellRowName.setCellType(HSSFCell.CELL_TYPE_STRING); //设置列头单元格的数据类型
+                    HSSFRichTextString text = new HSSFRichTextString(rowName[n]);
+                    cellRowName.setCellValue(text); //设置列头单元格的值
+                    cellRowName.setCellStyle(columnTopStyle); //设置列头单元格样式
                 }
                 
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
+                //将查询出的数据设置到sheet对应的单元格中
+                StatisticalResults obj = null;
+                HSSFCell cell = null;
+                for (int i = 0; i < data.size(); i++)
+                {
+                    obj = data.get(i);//遍历每个对象
+                    HSSFRow row = sheet.createRow(i + 1);//创建所需的行数
+                    
+                    row.setHeight((short)(25 * 20)); //设置高度
+                    cell = row.createCell(0, HSSFCell.CELL_TYPE_STRING);
+                    if (obj.getAuthorid() != null && !"".equals(obj.getAuthorid()))
+                    {
+                        cell.setCellValue(obj.getAuthorid()); //设置单元格的值
+                    }
+                    cell.setCellStyle(style);
+                    
+                    cell = row.createCell(1, HSSFCell.CELL_TYPE_STRING);
+                    if (obj.getFiletype() != null && !"".equals(obj.getFiletype()))
+                    {
+                        cell.setCellValue(obj.getFiletype()); //设置单元格的值
+                    }
+                    cell.setCellStyle(style);
+                    
+                    cell = row.createCell(2, HSSFCell.CELL_TYPE_NUMERIC);
+                    cell.setCellValue(obj.getAddsum());
+                    cell.setCellStyle(style);
+                    
+                    cell = row.createCell(3, HSSFCell.CELL_TYPE_NUMERIC);
+                    cell.setCellValue(obj.getModifysum());
+                    cell.setCellStyle(style);
+                    
+                    cell = row.createCell(4, HSSFCell.CELL_TYPE_NUMERIC);
+                    cell.setCellValue(obj.getDeletesum());
+                    cell.setCellStyle(style);
+                }
         }
     }
     

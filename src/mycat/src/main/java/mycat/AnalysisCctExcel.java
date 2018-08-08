@@ -60,7 +60,7 @@ public class AnalysisCctExcel
         
         // 数据入库
         dataToDB(right);
-        System.out.println("AnalysisCctExcel toast time is:" + (System.currentTimeMillis() - startTime) / 1000 + " minutes.");
+        System.out.println("AnalysisCctExcel toast time is:" + (System.currentTimeMillis() - startTime) / 1000 + " seconds.");
     }
     
     /**

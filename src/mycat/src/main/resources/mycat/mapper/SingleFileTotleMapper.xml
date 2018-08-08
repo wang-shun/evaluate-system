@@ -6,12 +6,13 @@
     <result column="filepath" jdbcType="VARCHAR" property="filepath" />
     <result column="totleaddline" jdbcType="INTEGER" property="totleaddline" />
     <result column="totledeleteline" jdbcType="INTEGER" property="totledeleteline" />
+    <result column="filetype" jdbcType="VARCHAR" property="filetype" />
   </resultMap>
   <insert id="insert" parameterType="mycat.bean.SingleFileTotle">
     insert into single_file_totle_tb (id, filepath, totleaddline, 
-      totledeleteline)
+      totledeleteline, filetype)
     values (#{id,jdbcType=INTEGER}, #{filepath,jdbcType=VARCHAR}, #{totleaddline,jdbcType=INTEGER}, 
-      #{totledeleteline,jdbcType=INTEGER})
+      #{totledeleteline,jdbcType=INTEGER}, #{filetype,jdbcType=VARCHAR})
   </insert>
   
   <insert id="insertSelective" parameterType="mycat.bean.SingleFileTotle">
@@ -29,6 +30,9 @@
       <if test="totledeleteline != null">
         totledeleteline,
       </if>
+      <if test="filetype != null">
+        filetype,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -42,6 +46,9 @@
       </if>
       <if test="totledeleteline != null">
         #{totledeleteline,jdbcType=INTEGER},
+      </if>
+      <if test="filetype != null">
+        #{filetype,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>

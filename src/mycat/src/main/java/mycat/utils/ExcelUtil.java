@@ -74,7 +74,7 @@ public class ExcelUtil
         }
         
         /** 解析第三个sheet页**/
-        getUserInfoFromSheet(workbook, 2, out, analysisId, replaceStr);
+        getCCTInfoFromSheet(workbook, 2, out, analysisId, replaceStr);
         
         try
         {
@@ -92,14 +92,15 @@ public class ExcelUtil
     }
     
     /**
-     * 用户基础资料解析
+     * 解析cct excel
+     * <功能详细描述>
      * @param workbook
      * @param sheetIndex
-     * @param type
      * @param map
-     * @param creatorId 导入者ID
+     * @param analysisId
+     * @param replaceStr
      */
-    private static void getUserInfoFromSheet(Workbook workbook, int sheetIndex, Map<INFO, List<CctInfo>> map, int analysisId, String replaceStr)
+    private static void getCCTInfoFromSheet(Workbook workbook, int sheetIndex, Map<INFO, List<CctInfo>> map, int analysisId, String replaceStr)
     {
         List<CctInfo> tempError = new ArrayList<CctInfo>();
         List<CctInfo> tempRight = new ArrayList<CctInfo>();
@@ -111,6 +112,7 @@ public class ExcelUtil
             String cell8 = null;
             Integer cell2 = null, cell3 = null, cell4 = null;
             boolean is = false;
+            String temp = null;
             if (sheet != null)
             {
                 int maxRow = sheet.getLastRowNum();
@@ -157,7 +159,15 @@ public class ExcelUtil
                         tempError.add(CctInfo);
                         is = true;
                     }
-                    cell8 = dealWithStr(getCellValue(row.getCell(8)), replaceStr);
+                    
+                    temp = getCellValue(row.getCell(8));
+                    
+                    // 针对文件全路径为空的情况需要取两列进行拼接
+                    if(null == temp || "".equals(temp.trim()))
+                    {
+                        temp = getCellValue(row.getCell(7)).concat(getCellValue(row.getCell(0)));
+                    }
+                    cell8 = dealWithStr(temp, replaceStr);
                     
                     /*if ("".equals(cell2)) {
                         CctInfo = new CctInfo();
@@ -179,6 +189,7 @@ public class ExcelUtil
                     CctInfo.setAddline(cell2);
                     CctInfo.setModifyline(cell3);
                     CctInfo.setDeleteline(cell4);
+                    CctInfo.setFiletype(GitLogUtil.suffix(cell8));
                     tempRight.add(CctInfo);
                 }
                 

@@ -8,6 +8,18 @@ public class SingleFileTotle {
     private Integer totleaddline;
 
     private Integer totledeleteline;
+    
+    private String filetype;
+
+    public String getFiletype()
+    {
+        return filetype;
+    }
+
+    public void setFiletype(String filetype)
+    {
+        this.filetype = filetype;
+    }
 
     public Integer getId() {
         return id;

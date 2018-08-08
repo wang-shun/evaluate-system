@@ -10,6 +10,18 @@ public class CctInfo {
     private Integer deleteline;
     
     private Integer modifyline;
+    
+    private String filetype;
+
+    public String getFiletype()
+    {
+        return filetype;
+    }
+
+    public void setFiletype(String filetype)
+    {
+        this.filetype = filetype;
+    }
 
     public Integer getModifyline()
     {
